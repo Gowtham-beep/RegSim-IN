@@ -1,7 +1,3 @@
-
----
-
-````md
 # RegSim-IN 🇮
 
 **Regulatory Simulation & Failure Memory CLI for Indian Backend Systems**
@@ -34,7 +30,7 @@ RegSim-IN exists to:
 
 ---
 
-## What RegSim-IN v1 Does ✅
+## What RegSim-IN v1 Does 
 
 Version 1 focuses on **deterministic rule simulation**.
 
@@ -69,7 +65,7 @@ Consider a backend payout flow where a contractor payment is executed without de
     "tds_deducted": false
   }
 }
-````
+```
 
 **Simulation result:**
 
@@ -90,15 +86,15 @@ This allows teams to catch deduction timing and threshold violations **before** 
 
 ---
 
-## What RegSim-IN Explicitly Does NOT Do ❌
+## What RegSim-IN Explicitly Does NOT Do 
 
 To avoid misuse or false confidence, RegSim-IN v1 does **not**:
 
-* ❌ Provide legal, tax, or regulatory advice
-* ❌ File or generate GST / TDS / RBI reports
-* ❌ Integrate with government, bank, or tax APIs
-* ❌ Automatically update rules from circulars
-* ❌ Fully simulate async systems (queues, retries, persistent state)
+*  Provide legal, tax, or regulatory advice
+*  File or generate GST / TDS / RBI reports
+*  Integrate with government, bank, or tax APIs
+*  Automatically update rules from circulars
+*  Fully simulate async systems (queues, retries, persistent state)
 
 **This is a simulation tool, not a compliance authority.**
 
@@ -184,7 +180,7 @@ This makes RegSim-IN suitable for automation and tooling.
 pip install regsim-in
 ```
 
-> ⚠️ RegSim-IN is under active development.
+>  RegSim-IN is under active development.
 
 ---
 
@@ -257,16 +253,9 @@ These are **not part of v1**.
 
 ---
 
-## Disclaimer ⚠️
-
-.
-
-```
-
----
+## Disclaimer 
 
 RegSim-IN is a **developer simulation tool**.
 It does **not** guarantee legal or regulatory compliance.
 
 Always consult qualified professionals for real-world compliance decisions
-```
