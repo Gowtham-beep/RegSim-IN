@@ -1,4 +1,4 @@
-# RegSim-IN 🇮
+# RegSim-IN
 
 **Regulatory Simulation & Failure Memory CLI for Indian Backend Systems**
 
