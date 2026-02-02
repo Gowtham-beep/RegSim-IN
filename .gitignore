@@ -1,0 +1,44 @@
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Distribution files
+*.egg-info/
+*.egg
+dist/
+build/
+wheels/
+
+# Pytest cache
+.pytest_cache/
+.coverage
+htmlcov/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Local configuration
+local_settings.py
+settings_local.py
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
