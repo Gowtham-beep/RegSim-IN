@@ -1,0 +1,71 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "RegSim-IN Evaluation Result",
+  "type": "object",
+  "required": ["status", "violations"],
+  "properties": {
+    "status": {
+      "type": "string",
+      "enum": ["PASS", "FAIL", "ERROR"],
+      "description": "Overall regulatory evaluation outcome"
+    },
+
+    "violations": {
+      "type": "array",
+      "description": "List of regulatory objections raised during evaluation",
+      "items": {
+        "type": "object",
+        "required": [
+          "rule_id",
+          "rule_version",
+          "authority",
+          "severity",
+          "message"
+        ],
+        "properties": {
+          "rule_id": {
+            "type": "string",
+            "description": "Identifier of the violated rule"
+          },
+
+          "rule_version": {
+            "type": "string",
+            "description": "Version of the rule that was evaluated"
+          },
+
+          "authority": {
+            "type": "string",
+            "enum": ["CBDT", "GST", "RBI"],
+            "description": "Regulatory authority raising the objection"
+          },
+
+          "severity": {
+            "type": "string",
+            "enum": ["LOW", "MEDIUM", "HIGH", "CRITICAL"],
+            "description": "Regulatory risk level of the violation"
+          },
+
+          "message": {
+            "type": "string",
+            "description": "Human-readable explanation of the violation"
+          },
+
+          "source_reference": {
+            "type": "string",
+            "description": "Legal basis for the violation"
+          },
+
+          "evidence": {
+            "type": "object",
+            "description": "Facts that caused this rule to trigger"
+          }
+        }
+      }
+    },
+
+    "metadata": {
+      "type": "object",
+      "description": "Execution metadata (run_id, evaluated_at, engine_version, etc.)"
+    }
+  }
+}

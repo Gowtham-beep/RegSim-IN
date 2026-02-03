@@ -1,0 +1,91 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "RegSim-IN Rule Schema",
+  "type": "object",
+  "required": [
+    "rule_id",
+    "rule_version",
+    "authority",
+    "severity",
+    "condition",
+    "action"
+  ],
+  "properties": {
+    "rule_id": {
+      "type": "string",
+      "description": "Stable identifier for the regulatory rule"
+    },
+
+    "rule_version": {
+      "type": "string",
+      "description": "Semantic or date-based version of the rule"
+    },
+
+    "authority": {
+      "type": "string",
+      "enum": ["CBDT", "GST", "RBI"],
+      "description": "Regulatory authority owning this rule"
+    },
+
+    "jurisdiction": {
+      "type": "string",
+      "description": "Geographic or legal scope (e.g. IN, IN-KA, CROSS_BORDER)"
+    },
+
+    "effective_from": {
+      "type": "string",
+      "format": "date",
+      "description": "Date from which the rule is legally applicable"
+    },
+
+    "effective_to": {
+      "type": "string",
+      "format": "date",
+      "description": "Date until which the rule is applicable"
+    },
+
+    "severity": {
+      "type": "string",
+      "enum": ["LOW", "MEDIUM", "HIGH", "CRITICAL"],
+      "description": "Risk level from a regulatory perspective"
+    },
+
+    "description": {
+      "type": "string",
+      "description": "Human-readable explanation of the rule intent"
+    },
+
+    "condition": {
+      "type": "object",
+      "description": "Declarative conditions that determine rule applicability"
+    },
+
+    "action": {
+      "type": "object",
+      "required": ["type", "message"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["FAIL", "WARN", "PASS"],
+          "description": "Outcome when the rule condition is satisfied"
+        },
+
+        "message": {
+          "type": "string",
+          "description": "Explanation shown to developers or auditors"
+        },
+
+        "evidence_fields": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Fact fields that triggered the rule"
+        }
+      }
+    },
+
+    "source_reference": {
+      "type": "string",
+      "description": "Legal reference (Act section, circular, notification)"
+    }
+  }
+}
