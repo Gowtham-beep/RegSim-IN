@@ -15,7 +15,8 @@
     "action": {
       "type": "FAIL",
       "message": "PAN not available for contractor payment exceeding ₹30,000",
-      "evidence_fields": ["amount", "payment_type", "pan_available"]
+      "evidence_fields": ["amount", "payment_type", "pan_available"],
+      "risk": "Higher TDS rate of 20% applies when PAN is not provided for contractor payments exceeding ₹30,000"
     },
     "source_reference": "Income Tax Act, Section 194C"
   }

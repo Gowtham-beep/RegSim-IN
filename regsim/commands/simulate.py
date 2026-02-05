@@ -44,6 +44,7 @@ def run_simulation(rules_path: str, input_path: str) -> dict:
                 "severity": rule["severity"],
                 "message": rule["action"]["message"],
                 "source_reference": rule.get("source_reference"),
+                "risk": rule["action"].get("risk"),
                 "evidence": evidence
             })
 
