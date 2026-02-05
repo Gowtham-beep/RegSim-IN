@@ -51,7 +51,8 @@ def run_simulation(rules_path: str, input_path: str) -> dict:
         "status": status,
         "violations": violations,
         "metadata": {
-            "evaluated_at": datetime.now().isoformat() + "Z",
-            "engine_version": "0.1.0",
+            "engine": "regsim-in",
+            "version": "0.1.0",
+            "payload_keys": list(facts.keys()),
         },
     }
