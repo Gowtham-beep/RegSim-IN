@@ -1,0 +1,38 @@
+[
+  {
+    "rule_id": "GST_INVALID_GSTIN",
+    "rule_version": "1.0",
+    "effective_from": "2017-07-01",
+    "description": "GSTIN must be valid for registered entities",
+    "condition": {
+      "field": "invoice.gstin",
+      "operator": "invalid_gstin",
+      "value": true
+    },
+    "action": {
+      "type": "FAIL",
+      "severity": "HIGH",
+      "message": "Invalid GSTIN format on invoice",
+      "risk": "Invoice may be rejected during audit"
+    },
+    "source_reference": "CGST Act - Section 25"
+  },
+  {
+    "rule_id": "GST_HSN_MISSING",
+    "rule_version": "1.0",
+    "effective_from": "2017-07-01",
+    "description": "HSN/SAC must be present on invoice",
+    "condition": {
+      "field": "invoice.hsn",
+      "operator": "missing",
+      "value": true
+    },
+    "action": {
+      "type": "FAIL",
+      "severity": "MEDIUM",
+      "message": "HSN/SAC code missing on invoice",
+      "risk": "Invoice non-compliance risk"
+    },
+    "source_reference": "GST Invoice Rules"
+  }
+]

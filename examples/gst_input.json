@@ -1,0 +1,9 @@
+{
+  "invoice": {
+    "id": "inv_2041",
+    "amount": 120000,
+    "gstin": "29ABCDE1234F1Z5",
+    "hsn": null,
+    "customer_type": "B2B"
+  }
+}
