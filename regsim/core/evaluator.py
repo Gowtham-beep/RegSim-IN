@@ -3,24 +3,27 @@ from regsim.core.validators import is_invalid_gstin
 
 
 def evaluate_condition(condition, payload):
-    field_value = get_field(payload, condition["field"])
+    found, field_value = get_field(payload, condition["field"])
     operator = condition["operator"]
     expected = condition["value"]
 
     if operator == "missing":
-        return field_value is None
+        return not found
 
     if operator == "invalid_gstin":
-        return is_invalid_gstin(field_value)
+        return not found or is_invalid_gstin(field_value)
 
-    if field_value is None:
+    if not found:
         return False
 
-    if operator == ">":
-        return field_value > expected
-    if operator == ">=":
-        return field_value >= expected
-    if operator == "==":
-        return field_value == expected
+    try:
+        if operator == ">":
+            return field_value > expected
+        if operator == ">=":
+            return field_value >= expected
+        if operator == "==":
+            return field_value == expected
+    except TypeError:
+        return False
 
     raise ValueError(f"Unsupported operator: {operator}")

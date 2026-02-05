@@ -3,6 +3,7 @@ from datetime import datetime
 from pathlib import Path
 
 from regsim.core.evaluator import evaluate_condition
+from regsim.engine import InvalidPayloadError
 
 
 def load_json(path: str):
@@ -15,6 +16,9 @@ def load_json(path: str):
 def run_simulation(rules_path: str, input_path: str) -> dict:
     rules = load_json(rules_path)
     facts = load_json(input_path)
+
+    if not isinstance(facts, dict):
+        raise InvalidPayloadError("Input payload must be a JSON object")
 
     violations = []
 

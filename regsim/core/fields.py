@@ -3,7 +3,7 @@ from typing import Any
 
 def get_field(payload: Any, field_path: str):
     if field_path is None or field_path == "":
-        return payload
+        return True, payload
 
     current = payload
     for part in field_path.split("."):
@@ -11,7 +11,7 @@ def get_field(payload: Any, field_path: str):
             if part in current:
                 current = current[part]
             else:
-                return None
+                return False, None
             continue
 
         if isinstance(current, list):
@@ -20,10 +20,10 @@ def get_field(payload: Any, field_path: str):
                 if 0 <= idx < len(current):
                     current = current[idx]
                 else:
-                    return None
+                    return False, None
                 continue
-            return None
+            return False, None
 
-        return None
+        return False, None
 
-    return current
+    return True, current

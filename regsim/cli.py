@@ -5,6 +5,7 @@ import json
 import sys
 
 from regsim.commands.simulate import run_simulation
+from regsim.engine import InvalidPayloadError
 
 
 def main():
@@ -22,6 +23,15 @@ def main():
         try:
             result = run_simulation(args.rules, args.input)
             print(json.dumps(result, indent=2))
+        except InvalidPayloadError as e:
+            print(json.dumps({
+                "status": "ERROR",
+                "violations": [],
+                "metadata": {
+                    "error": str(e)
+                }
+            }))
+            sys.exit(1)
         except Exception as e:
             print(json.dumps({
                 "status": "ERROR",
