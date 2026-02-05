@@ -1,40 +1,33 @@
+# regsim/cli.py
+
 import argparse
 import json
 import sys
-import regsim.engine as simulate
+
+from regsim.commands.simulate import run_simulation
+
 
 def main():
-    parser = argparse.ArgumentParser(
-        description="RegSim-IN - Regulatory Simulation CLI"
-    )
-    
-    parser.add_argument(
-        "simulate",
-        nargs="?",
-        help=" Run regulatory simulation",
-    )
-    
-    parser.add_argument("--rules",required=True,help="Path to rules JSON")
-    parser.add_argument("--input",required=True,help="Path to input JSON")
-    
+    parser = argparse.ArgumentParser(prog="regsim-in")
+
+    subparsers = parser.add_subparsers(dest="command", required=True)
+
+    simulate_parser = subparsers.add_parser("simulate", help="Run regulatory simulation")
+    simulate_parser.add_argument("--rules", required=True)
+    simulate_parser.add_argument("--input", required=True)
+
     args = parser.parse_args()
-    
-    try:
-        with open(args.rules) as f:
-            rules = json.load(f)
-            
-        with open(args.input) as f:
-            payload = json.load(f)
-            
-        result = simulate(rules,payload)
-        print(json.dumps(result,indent=2))
-        
-        if result["status"] == "FAIL":
+
+    if args.command == "simulate":
+        try:
+            result = run_simulation(args.rules, args.input)
+            print(json.dumps(result, indent=2))
+        except Exception as e:
+            print(json.dumps({
+                "status": "ERROR",
+                "violations": [],
+                "metadata": {
+                    "error": str(e)
+                }
+            }))
             sys.exit(1)
-            
-    except Exception as e:
-        print(json.dumps({
-            "status":"ERROR",
-            "message":str(e),
-        }))
-        sys.exit(2)

@@ -1,0 +1,22 @@
+[
+  {
+    "rule_id": "TDS_194C_NO_PAN",
+    "rule_version": "2024.1",
+    "authority": "CBDT",
+    "jurisdiction": "IN",
+    "effective_from": "2024-04-01",
+    "severity": "HIGH",
+    "description": "Higher TDS applies when PAN is not provided for contractor payments exceeding threshold",
+    "condition": {
+      "payment_type": "CONTRACTOR",
+      "amount_gt": 30000,
+      "pan_available": false
+    },
+    "action": {
+      "type": "FAIL",
+      "message": "PAN not available for contractor payment exceeding ₹30,000",
+      "evidence_fields": ["amount", "payment_type", "pan_available"]
+    },
+    "source_reference": "Income Tax Act, Section 194C"
+  }
+]
