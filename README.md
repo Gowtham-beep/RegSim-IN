@@ -201,6 +201,25 @@ Current v1 behavior:
 
 ---
 
+## Project Layout (Current)
+
+```
+regsim/
+  cli.py
+  commands/
+    simulate.py
+  core/
+    evaluator.py
+    fields.py
+    simulation.py
+    validators.py
+  schemas/
+```
+
+The CLI stays thin, while core rule evaluation lives under `regsim/core/`.
+
+---
+
 ## Rule Versioning & Regulatory Drift
 
 RegSim-IN v1 supports **explicit rule versioning**:
