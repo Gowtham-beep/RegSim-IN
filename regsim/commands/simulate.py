@@ -97,8 +97,15 @@ def run_simulation(rules_path: str, input_path: str) -> dict:
                 "evidence": evidence
             })
 
+    status = "PASS"
+    for v in violations:
+        if v.get("severity") == "BLOCKER":
+            status = "FAIL"
+            break
+        status = "FAIL"
+
     return {
-        "status": "FAIL" if violations else "PASS",
+        "status": status,
         "violations": violations,
         "metadata": {
             "evaluated_at": datetime.now().isoformat() + "Z",

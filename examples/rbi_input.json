@@ -1,0 +1,7 @@
+{
+  "flow": {
+    "platform_handles_funds": true,
+    "escrow_configured": false,
+    "merchant_kyc_completed": false
+  }
+}

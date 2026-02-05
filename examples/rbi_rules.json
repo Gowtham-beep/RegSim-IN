@@ -1,0 +1,38 @@
+[
+  {
+    "rule_id": "RBI_PA_FUNDS_FLOW",
+    "rule_version": "1.0",
+    "effective_from": "2020-03-17",
+    "description": "Platform should not directly handle funds without PA compliance",
+    "condition": {
+      "field": "flow.platform_handles_funds",
+      "operator": "==",
+      "value": true
+    },
+    "action": {
+      "type": "FAIL",
+      "severity": "BLOCKER",
+      "message": "Platform directly handles funds — likely payment aggregation violation",
+      "risk": "Account freeze or enforcement action possible"
+    },
+    "source_reference": "RBI PA Guidelines"
+  },
+  {
+    "rule_id": "RBI_ESCROW_MISSING",
+    "rule_version": "1.0",
+    "effective_from": "2020-03-17",
+    "description": "Escrow is expected when platform touches funds",
+    "condition": {
+      "field": "flow.escrow_configured",
+      "operator": "==",
+      "value": false
+    },
+    "action": {
+      "type": "FAIL",
+      "severity": "BLOCKER",
+      "message": "No escrow configured for platform fund flows",
+      "risk": "High probability of RBI observation"
+    },
+    "source_reference": "RBI PA Guidelines"
+  }
+]
