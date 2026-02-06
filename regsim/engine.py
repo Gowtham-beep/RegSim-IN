@@ -20,9 +20,29 @@ class InvalidPayloadError(Exception):
     pass
 
 
+REQUIRED_RULE_FIELDS = [
+    "rule_id",
+    "rule_version",
+    "effective_from",
+    "condition",
+    "action",
+]
+
+
+def validate_rules(rules):
+    for rule in rules:
+        for field in REQUIRED_RULE_FIELDS:
+            if field not in rule:
+                raise ValueError(
+                    f"Rule missing required field: {field} ({rule.get('rule_id')})"
+                )
+
+
 def simulate(rules,payload):
     if not isinstance(payload, dict):
         raise InvalidPayloadError("Input payload must be a JSON object")
+
+    validate_rules(rules)
     
     return{
         # place holder logic

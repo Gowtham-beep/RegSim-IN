@@ -1,9 +1,8 @@
 import json
-from datetime import datetime
 from pathlib import Path
 
 from regsim.core.evaluator import evaluate_condition
-from regsim.engine import InvalidPayloadError
+from regsim.engine import InvalidPayloadError, validate_rules
 
 
 def load_json(path: str):
@@ -13,50 +12,53 @@ def load_json(path: str):
     return json.loads(raw)
 
 
-def evaluate_rules(rules, facts) -> dict:
-    if not isinstance(facts, dict):
+def simulate(rules, payload, snapshot_date=None) -> dict:
+    if not isinstance(payload, dict):
         raise InvalidPayloadError("Input payload must be a JSON object")
 
+    validate_rules(rules)
+
     violations = []
+    applied_rules = []
 
     for rule in rules:
-        if evaluate_condition(rule["condition"], facts):
-            evidence = {
-                f: facts.get(f)
-                for f in rule["action"].get("evidence_fields", [])
-            }
+        applied_rules.append({
+            "rule_id": rule.get("rule_id"),
+            "rule_version": rule.get("rule_version"),
+            "effective_from": rule.get("effective_from"),
+            "source_reference": rule.get("source_reference"),
+        })
 
-            violations.append({
-                "rule_id": rule["rule_id"],
-                "rule_version": rule["rule_version"],
-                "authority": rule.get("authority"),
-                "severity": rule.get("severity"),
-                "message": rule["action"]["message"],
-                "source_reference": rule.get("source_reference"),
-                "risk": rule["action"].get("risk"),
-                "evidence": evidence,
-            })
+        condition = rule["condition"]
+        action = rule["action"]
 
-    status = "PASS"
-    for v in violations:
-        if v.get("severity") == "BLOCKER":
-            status = "FAIL"
-            break
-        status = "FAIL"
+        if evaluate_condition(condition, payload):
+            if action["type"] == "FAIL":
+                violations.append({
+                    "rule_id": rule["rule_id"],
+                    "rule_version": rule.get("rule_version"),
+                    "severity": action.get("severity", "HIGH"),
+                    "message": action["message"],
+                    "risk": action.get("risk"),
+                    "source_reference": rule.get("source_reference"),
+                })
+
+    status = "FAIL" if violations else "PASS"
 
     return {
         "status": status,
         "violations": violations,
         "metadata": {
             "engine": "regsim-in",
-            "version": "0.1.0",
-            "payload_keys": list(facts.keys()),
+            "engine_version": "0.1.0",
+            "rule_snapshot": snapshot_date,
+            "applied_rules": applied_rules,
         },
     }
 
 
 def run_simulation(rules_path: str, input_path: str) -> dict:
     rules = load_json(rules_path)
-    facts = load_json(input_path)
+    payload = load_json(input_path)
 
-    return evaluate_rules(rules, facts)
+    return simulate(rules, payload)

@@ -5,7 +5,7 @@ import json
 import sys
 
 from regsim.commands.simulate import run_simulation
-from regsim.core.simulation import evaluate_rules, load_json
+from regsim.core.simulation import load_json, simulate
 from regsim.engine import InvalidPayloadError
 from regsim.parser import extract_from_file
 
@@ -18,6 +18,11 @@ def main():
     simulate_parser = subparsers.add_parser("simulate", help="Run regulatory simulation")
     simulate_parser.add_argument("--rules", required=True)
     simulate_parser.add_argument("--input", required=True)
+    simulate_parser.add_argument(
+        "--snapshot-date",
+        help="Regulatory snapshot date (YYYY-MM-DD)",
+        required=False,
+    )
 
     args = parser.parse_args()
 
@@ -36,12 +41,14 @@ def main():
                 rules = load_json(args.rules)
                 all_results = []
                 for payload in extraction.payloads:
-                    all_results.append(evaluate_rules(rules, payload))
+                    all_results.append(simulate(rules, payload, snapshot_date=args.snapshot_date))
 
                 print(json.dumps(all_results, indent=2))
                 sys.exit(1 if any(r["status"] == "FAIL" for r in all_results) else 0)
 
-            result = run_simulation(args.rules, args.input)
+            rules = load_json(args.rules)
+            payload = load_json(args.input)
+            result = simulate(rules, payload, snapshot_date=args.snapshot_date)
             print(json.dumps(result, indent=2))
         except InvalidPayloadError as e:
             print(json.dumps({
