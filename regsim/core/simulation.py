@@ -1,6 +1,8 @@
 import json
 from pathlib import Path
 
+import jsonschema
+
 from regsim.core.evaluator import evaluate_condition
 from regsim.engine import InvalidPayloadError, validate_rules
 
@@ -11,11 +13,34 @@ def load_json(path: str):
         raise ValueError(f"{path} is empty")
     return json.loads(raw)
 
+def load_schema(schema_name: str) -> dict:
+    schema_path = Path(__file__).resolve().parents[1] / "schemas" / schema_name
+    raw = schema_path.read_text().strip()
+    if not raw:
+        raise ValueError(f"{schema_path} is empty")
+    return json.loads(raw)
+
+
+def validate_rules_schema(rules):
+    if not isinstance(rules, list):
+        raise ValueError("Rules must be a JSON array")
+
+    schema = load_schema("rule.schema.json")
+    for rule in rules:
+        try:
+            jsonschema.validate(instance=rule, schema=schema)
+        except jsonschema.ValidationError as e:
+            rule_id = rule.get("rule_id") if isinstance(rule, dict) else None
+            raise ValueError(
+                f"Rule schema validation failed: {e.message} ({rule_id})"
+            ) from e
+
 
 def simulate(rules, payload, snapshot_date=None) -> dict:
     if not isinstance(payload, dict):
         raise InvalidPayloadError("Input payload must be a JSON object")
 
+    validate_rules_schema(rules)
     validate_rules(rules)
 
     violations = []

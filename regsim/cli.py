@@ -35,8 +35,9 @@ def main():
                 all_results = []
                 extraction_errors = []
 
-                for root, _, files in os.walk(args.input):
-                    for filename in files:
+                for root, dirs, files in os.walk(args.input):
+                    dirs.sort()
+                    for filename in sorted(files):
                         if not filename.endswith(".py"):
                             continue
                         file_path = os.path.join(root, filename)

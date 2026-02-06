@@ -5,8 +5,7 @@
   "required": [
     "rule_id",
     "rule_version",
-    "authority",
-    "severity",
+    "effective_from",
     "condition",
     "action"
   ],
