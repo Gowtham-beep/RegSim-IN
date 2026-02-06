@@ -13,10 +13,7 @@ def load_json(path: str):
     return json.loads(raw)
 
 
-def run_simulation(rules_path: str, input_path: str) -> dict:
-    rules = load_json(rules_path)
-    facts = load_json(input_path)
-
+def evaluate_rules(rules, facts) -> dict:
     if not isinstance(facts, dict):
         raise InvalidPayloadError("Input payload must be a JSON object")
 
@@ -56,3 +53,10 @@ def run_simulation(rules_path: str, input_path: str) -> dict:
             "payload_keys": list(facts.keys()),
         },
     }
+
+
+def run_simulation(rules_path: str, input_path: str) -> dict:
+    rules = load_json(rules_path)
+    facts = load_json(input_path)
+
+    return evaluate_rules(rules, facts)
