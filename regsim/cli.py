@@ -33,7 +33,7 @@ def main():
         help="Print RegSim-IN version",
     )
 
-    subparsers = parser.add_subparsers(dest="command", required=True)
+    subparsers = parser.add_subparsers(dest="command", required=False)
 
     simulate_parser = subparsers.add_parser("simulate", help="Run regulatory simulation")
     simulate_parser.add_argument("--rules", required=True)
@@ -49,6 +49,10 @@ def main():
     if args.version:
         print(get_version())
         sys.exit(0)
+
+    if not args.command:
+        parser.print_help()
+        sys.exit(2)
 
     if args.command == "simulate":
         try:
