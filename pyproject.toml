@@ -21,3 +21,6 @@ exclude = ["rules*", "tests*", "examples*", ".github*"]
 
 [tool.setuptools]
 include-package-data = true
+
+[tool.setuptools.package-data]
+regsim = ["schemas/*.json"]
