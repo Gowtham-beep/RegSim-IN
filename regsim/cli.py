@@ -5,14 +5,33 @@ import json
 import os
 import sys
 
+import pkg_resources
+
 from regsim.commands.simulate import run_simulation
-from regsim.core.simulation import load_json, simulate
+from regsim.core.simulation import load_json, load_rules, simulate
 from regsim.engine import InvalidPayloadError
 from regsim.parser import extract_from_file
 
 
+def get_version():
+    return pkg_resources.get_distribution("regsim-in").version
+
+
+def print_error(message: str, exit_code: int = 1) -> None:
+    print(json.dumps({
+        "status": "ERROR",
+        "message": message,
+    }))
+    sys.exit(exit_code)
+
+
 def main():
     parser = argparse.ArgumentParser(prog="regsim-in")
+    parser.add_argument(
+        "--version",
+        action="store_true",
+        help="Print RegSim-IN version",
+    )
 
     subparsers = parser.add_subparsers(dest="command", required=True)
 
@@ -27,9 +46,13 @@ def main():
 
     args = parser.parse_args()
 
+    if args.version:
+        print(get_version())
+        sys.exit(0)
+
     if args.command == "simulate":
         try:
-            rules = load_json(args.rules)
+            rules = load_rules(args.rules)
 
             if os.path.isdir(args.input):
                 all_results = []
@@ -51,11 +74,7 @@ def main():
                             )
 
                 if extraction_errors:
-                    print(json.dumps({
-                        "status": "ERROR",
-                        "errors": extraction_errors,
-                    }))
-                    sys.exit(2)
+                    print_error("; ".join(extraction_errors), exit_code=2)
 
                 print(json.dumps(all_results, indent=2))
                 sys.exit(1 if any(r["status"] == "FAIL" for r in all_results) else 0)
@@ -64,11 +83,7 @@ def main():
                 extraction = extract_from_file(args.input)
 
                 if extraction.errors:
-                    print(json.dumps({
-                        "status": "ERROR",
-                        "errors": extraction.errors,
-                    }))
-                    sys.exit(2)
+                    print_error("; ".join(extraction.errors), exit_code=2)
 
                 all_results = []
                 for payload in extraction.payloads:
@@ -83,20 +98,6 @@ def main():
             result = simulate(rules, payload, snapshot_date=args.snapshot_date)
             print(json.dumps(result, indent=2))
         except InvalidPayloadError as e:
-            print(json.dumps({
-                "status": "ERROR",
-                "violations": [],
-                "metadata": {
-                    "error": str(e)
-                }
-            }))
-            sys.exit(1)
+            print_error(str(e), exit_code=1)
         except Exception as e:
-            print(json.dumps({
-                "status": "ERROR",
-                "violations": [],
-                "metadata": {
-                    "error": str(e)
-                }
-            }))
-            sys.exit(1)
+            print_error(str(e), exit_code=1)

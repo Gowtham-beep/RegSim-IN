@@ -165,12 +165,35 @@ Example failure output:
     }
   ],
   "metadata": {
-    "snapshot_date": "2024-04-01"
+    "engine": "regsim-in",
+    "engine_version": "0.1.0",
+    "rule_snapshot": "2024-04-01",
+    "applied_rules": [
+      {
+        "rule_id": "TDS_194C_THRESHOLD",
+        "rule_version": "1.0",
+        "effective_from": "2024-04-01",
+        "source_reference": "Income Tax Act - Section 194C"
+      }
+    ]
   }
 }
 ```
 
 This makes RegSim-IN suitable for automation and tooling.
+
+---
+
+## Error Output
+
+Errors are always returned as JSON and never include a Python traceback:
+
+```json
+{
+  "status": "ERROR",
+  "message": "Rule validation failed: missing field 'action'"
+}
+```
 
 ---
 
@@ -188,7 +211,7 @@ pip install regsim-in
 
 ```bash
 regsim-in simulate \
-  --rules rules.json \
+  --rules rules/ \
   --input input.json
 ```
 
@@ -243,7 +266,7 @@ This ensures:
 ## CI/CD Usage Example
 
 ```bash
-regsim-in simulate --rules rules.json --input payload.json || exit 1
+regsim-in simulate --rules rules/ --input payload.json || exit 1
 ```
 
 A failing rule causes a non-zero exit code.
@@ -278,3 +301,16 @@ RegSim-IN is a **developer simulation tool**.
 It does **not** guarantee legal or regulatory compliance.
 
 Always consult qualified professionals for real-world compliance decisions
+
+---
+
+## Exact Commands
+
+# Run against JSON payload
+regsim-in simulate --rules rules/ --input payload.json
+
+# Run against Python service
+regsim-in simulate --rules rules/ --input src/
+
+# CI usage
+regsim-in simulate --rules rules/ --input src/ --snapshot-date 2024-04-01

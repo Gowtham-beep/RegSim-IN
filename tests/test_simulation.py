@@ -1,11 +1,11 @@
 import jsonschema
 
-from regsim.core.simulation import load_json, load_schema, simulate
+from regsim.core.simulation import load_json, load_rules, load_schema, simulate
 from regsim.parser import extract_from_file
 
 
 def test_simulate_json_examples():
-    rules = load_json("examples/rules.json")
+    rules = load_rules("rules/tds/194C_threshold.json")
     payload = load_json("examples/input.json")
     result = simulate(rules, payload, snapshot_date="2024-04-01")
     assert result["status"] in {"PASS", "FAIL"}
@@ -16,7 +16,7 @@ def test_simulate_json_examples():
 
 
 def test_simulate_messy_input_no_crash():
-    rules = load_json("examples/rules.json")
+    rules = load_rules("rules/tds/194C_threshold.json")
     payload = load_json("examples/messy_input.json")
     result = simulate(rules, payload)
     assert result["status"] in {"PASS", "FAIL"}

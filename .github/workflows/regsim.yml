@@ -30,7 +30,7 @@ jobs:
       - name: Run RegSim-IN simulation
         run: |
           regsim-in simulate \
-            --rules examples/rules.json \
+            --rules rules/ \
             --input examples/payout_service.py \
             --snapshot-date 2024-04-01 \
             > audit.json

@@ -1,4 +1,5 @@
 import json
+import os
 from pathlib import Path
 
 import jsonschema
@@ -12,6 +13,26 @@ def load_json(path: str):
     if not raw:
         raise ValueError(f"{path} is empty")
     return json.loads(raw)
+
+
+def load_rules(path: str):
+    if os.path.isdir(path):
+        rules = []
+        for root, dirs, files in os.walk(path):
+            dirs.sort()
+            for filename in sorted(files):
+                if not filename.endswith(".json"):
+                    continue
+                file_path = os.path.join(root, filename)
+                data = load_json(file_path)
+                if isinstance(data, list):
+                    rules.extend(data)
+                else:
+                    rules.append(data)
+        return rules
+
+    data = load_json(path)
+    return data if isinstance(data, list) else [data]
 
 def load_schema(schema_name: str) -> dict:
     schema_path = Path(__file__).resolve().parents[1] / "schemas" / schema_name
@@ -83,7 +104,7 @@ def simulate(rules, payload, snapshot_date=None) -> dict:
 
 
 def run_simulation(rules_path: str, input_path: str) -> dict:
-    rules = load_json(rules_path)
+    rules = load_rules(rules_path)
     payload = load_json(input_path)
 
     return simulate(rules, payload)
