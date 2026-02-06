@@ -21,6 +21,7 @@ jobs:
       - name: Install RegSim-IN (local)
         run: |
           pip install -e .
+          pip install pytest
 
       - name: Run tests
         run: |
