@@ -1,0 +1,41 @@
+name: RegSim-IN Compliance Simulation
+
+on:
+  pull_request:
+  push:
+    branches: [ main ]
+
+jobs:
+  regsim:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install RegSim-IN (local)
+        run: |
+          pip install -e .
+
+      - name: Run tests
+        run: |
+          pytest -q
+
+      - name: Run RegSim-IN simulation
+        run: |
+          regsim-in simulate \
+            --rules examples/rules.json \
+            --input examples/payout_service.py \
+            --snapshot-date 2024-04-01 \
+            > audit.json
+
+      - name: Upload audit artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: regsim-audit
+          path: audit.json
