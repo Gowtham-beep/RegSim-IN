@@ -2,6 +2,7 @@
 
 import argparse
 import json
+import os
 import sys
 
 from regsim.commands.simulate import run_simulation
@@ -28,6 +29,36 @@ def main():
 
     if args.command == "simulate":
         try:
+            rules = load_json(args.rules)
+
+            if os.path.isdir(args.input):
+                all_results = []
+                extraction_errors = []
+
+                for root, _, files in os.walk(args.input):
+                    for filename in files:
+                        if not filename.endswith(".py"):
+                            continue
+                        file_path = os.path.join(root, filename)
+                        extraction = extract_from_file(file_path)
+                        if extraction.errors:
+                            extraction_errors.extend(extraction.errors)
+                            continue
+                        for payload in extraction.payloads:
+                            all_results.append(
+                                simulate(rules, payload, snapshot_date=args.snapshot_date)
+                            )
+
+                if extraction_errors:
+                    print(json.dumps({
+                        "status": "ERROR",
+                        "errors": extraction_errors,
+                    }))
+                    sys.exit(2)
+
+                print(json.dumps(all_results, indent=2))
+                sys.exit(1 if any(r["status"] == "FAIL" for r in all_results) else 0)
+
             if args.input.endswith(".py"):
                 extraction = extract_from_file(args.input)
 
@@ -38,15 +69,15 @@ def main():
                     }))
                     sys.exit(2)
 
-                rules = load_json(args.rules)
                 all_results = []
                 for payload in extraction.payloads:
-                    all_results.append(simulate(rules, payload, snapshot_date=args.snapshot_date))
+                    all_results.append(
+                        simulate(rules, payload, snapshot_date=args.snapshot_date)
+                    )
 
                 print(json.dumps(all_results, indent=2))
                 sys.exit(1 if any(r["status"] == "FAIL" for r in all_results) else 0)
 
-            rules = load_json(args.rules)
             payload = load_json(args.input)
             result = simulate(rules, payload, snapshot_date=args.snapshot_date)
             print(json.dumps(result, indent=2))
