@@ -2,6 +2,16 @@
 
 **Regulatory Simulation & Failure Memory CLI for Indian Backend Systems**
 
+## Why This Exists
+
+RegSim-IN exists because regulatory failures in Indian fintech are usually discovered late, are deterministic, and are repeated across teams. This tool makes those failures explicit and testable.
+
+## Who This Is For
+
+* Backend engineers building fintech systems in India
+* Early-stage founders prototyping regulated flows
+* Teams who want to fail fast on compliance assumptions
+
 ---
 
 ## What is RegSim-IN?
