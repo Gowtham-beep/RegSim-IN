@@ -5,7 +5,7 @@ import json
 import os
 import sys
 
-import pkg_resources
+from importlib import metadata
 
 from regsim.commands.simulate import run_simulation
 from regsim.core.simulation import load_json, load_rules, simulate
@@ -14,7 +14,7 @@ from regsim.parser import extract_from_file
 
 
 def get_version():
-    return pkg_resources.get_distribution("regsim-in").version
+    return metadata.version("regsim-in")
 
 
 def print_error(message: str, exit_code: int = 1) -> None:

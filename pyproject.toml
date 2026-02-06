@@ -12,6 +12,10 @@ dependencies = [
   "jsonschema>=4.0.0"
 ]
 
+[tool.setuptools.packages.find]
+include = ["regsim*"]
+exclude = ["rules*", "tests*", "examples*", ".github*"]
+
 
 [project.scripts]
 regsim-in = "regsim.cli:main"
