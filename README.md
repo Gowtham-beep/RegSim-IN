@@ -120,6 +120,10 @@ In a GitHub Actions / CI pipeline (stops bad code):
 regsim-in simulate --rules rules/ --input payload.json || exit 1
 ```
 
+## User Manual
+
+Read the full workflow guide here: [USER_MANUAL.md](USER_MANUAL.md)
+
 ## CLI Options (Current v1)
 
 - `regsim-in --version` prints the installed version.
