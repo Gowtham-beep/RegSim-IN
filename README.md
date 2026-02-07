@@ -1,71 +1,70 @@
-# RegSim-IN
-
+# RegSim-IN 🇮🇳
 **Regulatory Simulation & Failure Memory CLI for Indian Backend Systems**
 
-## Why This Exists
+PyPI package: `regsim-in` (`https://pypi.org/project/regsim-in/`)
 
-RegSim-IN exists because regulatory failures in Indian fintech are usually discovered late, are deterministic, and are repeated across teams. This tool makes those failures explicit and testable.
+## Why This Project Exists (Simple Explanation)
 
-## Who This Is For
+In India, when developers build fintech apps (like payment tools, invoicing systems, or lending platforms), they often discover **regulatory problems** (tax rules, RBI guidelines) **too late** — during audits, tax notices, or when something breaks in production.
 
-* Backend engineers building fintech systems in India
-* Early-stage founders prototyping regulated flows
-* Teams who want to fail fast on compliance assumptions
+These problems are usually:
+- Predictable (the same mistake happens again and again)
+- Repeated by many teams
+- Very expensive or stressful when found late
 
----
+RegSim-IN is a small command-line tool that helps developers **find these problems early** — while they are still writing code or testing locally — instead of waiting for a disaster.
 
-## What is RegSim-IN?
+It turns complicated government rules into simple, computer-checkable instructions.
 
-**RegSim-IN** is a **developer-first CLI** that simulates Indian regulatory rules (TDS, GST, RBI-style constraints) against backend data flows **before production**.
+## Who Should Use This Tool?
 
-It helps backend teams **detect, explain, and remember regulatory failures** early — during development, testing, and CI — instead of discovering them during audits or incidents.
+- Backend developers building anything related to money/payments in India  
+- Founders or small teams creating early versions (prototypes/MVPs) of fintech products  
+- Anyone who wants to avoid nasty surprises from TDS, GST, or RBI rules later
 
-RegSim-IN treats regulation as **executable rules**, not PDFs.
+## What Is RegSim-IN? (One-Sentence Version)
 
----
+**RegSim-IN** is a free command-line tool you install with `pip` that checks your code/data against Indian tax and RBI rules **before** you deploy anything to real users.
 
-## What Problem Does This Solve?
+It acts like a very strict, very fast reviewer that only cares about regulations.
 
-Backend teams frequently:
+## The Real Problem It Solves (Plain English)
 
-* Ship compliant-looking code that fails under real regulatory edge cases
-* Discover issues late (audits, settlements, reversals)
-* Repeat the *same regulatory mistakes* across services and teams
+Most teams:
+- Write code that looks correct  
+- But forget or misunderstand some tax/RBI detail  
+- Only find out when the tax department sends a notice, a payment fails, or an auditor flags it  
+- Then waste weeks fixing it — and often make the **same mistake** again in another part of the app or another project
 
-RegSim-IN exists to:
+RegSim-IN helps you:
+- Catch these mistakes **while you're still coding or testing**  
+- See exactly **which rule** you broke and **why**  
+- Stop repeating the same compliance mistakes
 
-* Shift regulatory failures **left**
-* Make rules **explicit and testable**
-* Prevent **repeat regulatory incidents**
+## What v1 Actually Does (Very Clear List)
 
----
+Version 1 is simple and safe on purpose:
 
-## What RegSim-IN v1 Does 
+- You write rules in easy-to-read JSON files (like mini law statements)  
+- You give it your sample data (also JSON)  
+- It checks if your data follows the rules  
+- It tells you **PASS** or **FAIL** — and explains exactly what went wrong  
+- Everything is 100% predictable (same input = same result every time)  
+- Works great in automated tests (CI/CD pipelines) — can stop a bad merge  
+- Keeps a record of which rules were used and when (so you can prove "we checked on this date")
 
-Version 1 focuses on **deterministic rule simulation**.
+It **does not**:
+- Talk to any government website
+- File taxes for you
+- Give legal advice
+- Automatically know the latest law changes
+- Check your entire running app (just data samples or code snippets)
 
-RegSim-IN v1 can:
+## Real Example Everyone Can Understand
 
-* Load regulatory rules defined in **JSON**
-* Run those rules against input payloads (also JSON)
-* Evaluate pass/fail conditions
-* Emit **machine-readable JSON output**
-* Explain *why* a rule failed
+Imagine your app pays freelancers ₹45,000 but forgets to cut TDS (tax deducted at source).
 
-This makes RegSim-IN suitable for:
-
-* Local development checks
-* CI/CD gates
-* Backend design validation
-* Regulatory edge-case exploration
-
----
-
-## Example: Detecting a Missed TDS Deduction
-
-Consider a backend payout flow where a contractor payment is executed without deducting TDS.
-
-**Input payload:**
+**Your test data looks like this:**
 ```json
 {
   "payment": {
@@ -77,8 +76,10 @@ Consider a backend payout flow where a contractor payment is executed without de
 }
 ```
 
-**Simulation result:**
+**The tool checks against this simple rule:**
+"If payment > ₹30,000 to a contractor → TDS must be deducted"
 
+**Result from RegSim-IN:**
 ```json
 {
   "status": "FAIL",
@@ -92,235 +93,77 @@ Consider a backend payout flow where a contractor payment is executed without de
 }
 ```
 
-This allows teams to catch deduction timing and threshold violations **before** payouts reach production systems.
+→ You fix it **before** sending real money.
 
----
-
-## What RegSim-IN Explicitly Does NOT Do 
-
-To avoid misuse or false confidence, RegSim-IN v1 does **not**:
-
-*  Provide legal, tax, or regulatory advice
-*  File or generate GST / TDS / RBI reports
-*  Integrate with government, bank, or tax APIs
-*  Automatically update rules from circulars
-*  Fully simulate async systems (queues, retries, persistent state)
-
-**This is a simulation tool, not a compliance authority.**
-
----
-
-## Supported Languages
-
-* **Python** (v1)
-
-The CLI is language-agnostic, but rule evaluation currently targets Python-style backend data models.
-
----
-
-## Rule Format
-
-Rules are defined in **JSON**.
-
-Design goals:
-
-* Explicit structure
-* Deterministic evaluation
-* Easy diffing & review
-* CI/CD friendliness
-
-### Example Rule
-
-```json
-{
-  "rule_id": "TDS_194C_THRESHOLD",
-  "rule_version": "1.0",
-  "effective_from": "2024-04-01",
-  "description": "TDS applies if contractor payment exceeds threshold",
-  "condition": {
-    "field": "payment.amount",
-    "operator": ">",
-    "value": 30000
-  },
-  "action": {
-    "type": "FAIL",
-    "message": "TDS must be deducted under section 194C"
-  },
-  "source_reference": "Income Tax Act - Section 194C"
-}
-```
-
----
-
-## Input Format
-
-Inputs represent **backend payloads or traces**, also in JSON.
-
----
-
-## Output Format
-
-All outputs are **JSON only**.
-
-Example failure output:
-
-```json
-{
-  "status": "FAIL",
-  "violations": [
-    {
-      "rule_id": "TDS_194C_THRESHOLD",
-      "severity": "HIGH",
-      "message": "TDS must be deducted under section 194C"
-    }
-  ],
-  "metadata": {
-    "engine": "regsim-in",
-    "engine_version": "0.1.0",
-    "rule_snapshot": "2024-04-01",
-    "applied_rules": [
-      {
-        "rule_id": "TDS_194C_THRESHOLD",
-        "rule_version": "1.0",
-        "effective_from": "2024-04-01",
-        "source_reference": "Income Tax Act - Section 194C"
-      }
-    ]
-  }
-}
-```
-
-This makes RegSim-IN suitable for automation and tooling.
-
----
-
-## Error Output
-
-Errors are always returned as JSON and never include a Python traceback:
-
-```json
-{
-  "status": "ERROR",
-  "message": "Rule validation failed: missing field 'action'"
-}
-```
-
----
-
-## Installation (Early Prototype)
+## Installation (One Command)
 
 ```bash
 pip install regsim-in
 ```
 
->  RegSim-IN is under active development.
+(You need Python installed — most developers already have it.)
 
----
+## Quick Usage Examples
 
-## Usage (v1)
-
+Check one file:
 ```bash
-regsim-in simulate \
-  --rules rules/ \
-  --input input.json
+regsim-in simulate --rules my-rules-folder/ --input my-test-data.json
 ```
 
-Current v1 behavior:
-
-* CLI initializes correctly
-* Rules are parsed and validated
-* Simulation runs deterministically
-* JSON output is emitted
-
----
-
-## Project Layout (Current)
-
-```
-regsim/
-  cli.py
-  commands/
-    simulate.py
-  core/
-    evaluator.py
-    fields.py
-    simulation.py
-    validators.py
-  schemas/
+Check your whole source code folder:
+```bash
+regsim-in simulate --rules rules/ --input src/
 ```
 
-The CLI stays thin, while core rule evaluation lives under `regsim/core/`.
-
----
-
-## Rule Versioning & Regulatory Drift
-
-RegSim-IN v1 supports **explicit rule versioning**:
-
-* Rules declare:
-
-  * `rule_version`
-  * `effective_from`
-  * `source_reference`
-* No rule updates happen implicitly
-* Simulations are always tied to a known regulatory snapshot
-
-This ensures:
-
-* Reproducibility
-* Reviewability
-* Trust
-
----
-
-## CI/CD Usage Example
-
+In a GitHub Actions / CI pipeline (stops bad code):
 ```bash
 regsim-in simulate --rules rules/ --input payload.json || exit 1
 ```
 
-A failing rule causes a non-zero exit code.
+## CLI Options (Current v1)
+
+- `regsim-in --version` prints the installed version.
+- `regsim-in simulate --rules <path> --input <path>` runs a simulation.
+- `--snapshot-date YYYY-MM-DD` attaches a regulatory snapshot date in output metadata (for audit trails).
+
+## Important Safety Warnings (Please Read)
+
+**RegSim-IN is NOT:**
+- A replacement for a Chartered Accountant (CA)
+- A way to file taxes or talk to the government
+- Automatically up-to-date with every new RBI circular
+- Giving you legal protection
+
+It is only a **developer helper** to find obvious mistakes early.
+For real money movement, always talk to qualified professionals.
+
+**Official Disclaimer:**  
+RegSim-IN is a developer simulation tool for engineering feedback only.  
+It does **not** guarantee legal or regulatory compliance.  
+Always consult qualified professionals for real-world decisions.
+
+## Future Plans (Not Promises)
+
+Later versions might add:
+- Remembering past failures so you don't repeat them  
+- Easier ways for people to share rules  
+- Checking more complicated flows (queues, retries)
+
+None of these are in v1. v1 is intentionally small and trustworthy.
+
+## Core Beliefs Behind This Tool
+
+- Simulation > pretending to be perfect  
+- Clear rules > hidden assumptions  
+- Predictable behavior > magic  
+- Learning from mistakes > repeating them
 
 ---
 
-## Roadmap (Explicit, Not Promised)
+Thank you for reading.
 
-Planned future directions include:
+If you're a developer in India building anything fintech-related, try it and tell me what breaks (or doesn't).
+Feedback → better tool.
 
-* Regulatory failure memory & correlation
-* Safer rule authoring workflows
-* Async system modeling hooks
-* Community-contributed rule sets
-
-These are **not part of v1**.
-
----
-
-## Philosophy
-
-* Simulation over certification
-* Explicit rules over implicit assumptions
-* Deterministic behavior over magic
-* Memory over repetition
-
----
-
-## Disclaimer 
-
-RegSim-IN is a **developer simulation tool**.
-It does **not** guarantee legal or regulatory compliance.
-
-Always consult qualified professionals for real-world compliance decisions
-
----
-
-## Exact Commands
-
-# Run against JSON payload
-regsim-in simulate --rules rules/ --input payload.json
-
-# Run against Python service
-regsim-in simulate --rules rules/ --input src/
-
-# CI usage
-regsim-in simulate --rules rules/ --input src/ --snapshot-date 2024-04-01
+Gowtham  
+Bengaluru, 2026
