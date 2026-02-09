@@ -1,11 +1,15 @@
 import ast
 
+
+def _literal_or_none(node):
+    try:
+        return ast.literal_eval(node)
+    except Exception:
+        return None
+
+
 def extract_dict(node):
-    payload = {}
-
-    for key, value in zip(node.keys, node.values):
-        if isinstance(key, ast.Constant):
-            if isinstance(value, ast.Constant):
-                payload[key.value] = value.value
-
-    return payload if payload else None
+    value = _literal_or_none(node)
+    if isinstance(value, dict):
+        return value
+    return None

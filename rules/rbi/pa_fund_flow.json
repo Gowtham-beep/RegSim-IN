@@ -11,7 +11,7 @@
     },
     "action": {
       "type": "FAIL",
-      "severity": "BLOCKER",
+      "severity": "CRITICAL",
       "message": "Platform directly handles funds — likely payment aggregation violation",
       "risk": "Account freeze or enforcement action possible"
     },
@@ -29,7 +29,7 @@
     },
     "action": {
       "type": "FAIL",
-      "severity": "BLOCKER",
+      "severity": "CRITICAL",
       "message": "No escrow configured for platform fund flows",
       "risk": "High probability of RBI observation"
     },

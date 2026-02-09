@@ -74,6 +74,17 @@
           "description": "Explanation shown to developers or auditors"
         },
 
+        "severity": {
+          "type": "string",
+          "enum": ["LOW", "MEDIUM", "HIGH", "CRITICAL"],
+          "description": "Risk level attached to this action"
+        },
+
+        "risk": {
+          "type": "string",
+          "description": "Operational impact summary for this action"
+        },
+
         "evidence_fields": {
           "type": "array",
           "items": { "type": "string" },

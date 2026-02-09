@@ -38,18 +38,7 @@ def validate_rules(rules):
                 )
 
 
-def simulate(rules,payload):
-    if not isinstance(payload, dict):
-        raise InvalidPayloadError("Input payload must be a JSON object")
+def simulate(rules, payload, snapshot_date=None):
+    from regsim.core.simulation import simulate as core_simulate
 
-    validate_rules(rules)
-    
-    return{
-        # place holder logic
-        "status":"PASS",
-        "violations":[],
-        "metadata":{
-            "engine":"regsim-in",
-            "version":"0.1.0"
-        }
-    }
+    return core_simulate(rules, payload, snapshot_date=snapshot_date)

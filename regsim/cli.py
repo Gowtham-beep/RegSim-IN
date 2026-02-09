@@ -7,7 +7,6 @@ import sys
 
 from importlib import metadata
 
-from regsim.commands.simulate import run_simulation
 from regsim.core.simulation import load_json, load_rules, simulate
 from regsim.engine import InvalidPayloadError
 from regsim.parser import extract_from_file
@@ -79,6 +78,11 @@ def main():
 
                 if extraction_errors:
                     print_error("; ".join(extraction_errors), exit_code=2)
+                if not all_results:
+                    print_error(
+                        "No payloads extracted from Python sources in input path",
+                        exit_code=2,
+                    )
 
                 print(json.dumps(all_results, indent=2))
                 sys.exit(1 if any(r["status"] == "FAIL" for r in all_results) else 0)
@@ -93,6 +97,12 @@ def main():
                 for payload in extraction.payloads:
                     all_results.append(
                         simulate(rules, payload, snapshot_date=args.snapshot_date)
+                    )
+
+                if not all_results:
+                    print_error(
+                        "No payloads extracted from Python source file",
+                        exit_code=2,
                     )
 
                 print(json.dumps(all_results, indent=2))
